@@ -1,4 +1,7 @@
 module.exports = (req, res) => {
+  if (req.method === 'GET') {
+    return res.json({ hasPin: !!process.env.ACCESS_PIN, len: process.env.ACCESS_PIN ? process.env.ACCESS_PIN.length : 0 });
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
