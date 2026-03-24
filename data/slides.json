@@ -47,7 +47,8 @@
                        "confirmQuestions":  [
                                                 "Does that agenda work for you, or is there something specific you want to make sure we cover?",
                                                 "Before we dive in — how familiar is your team with the outbound model in general?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-1.png"
                    },
                    {
                        "id":  2,
@@ -84,7 +85,8 @@
                        "confirmQuestions":  [
                                                 "Which of those three growth methods — outbound, inbound, or referrals — has been your biggest driver so far?",
                                                 "Does that distinction between B2B and B2C marketing resonate with how your buyers actually behave?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-2.png"
                    },
                    {
                        "id":  3,
@@ -121,7 +123,8 @@
                        "confirmQuestions":  [
                                                 "Any questions about our background before I move on?",
                                                 "When you hear those growth numbers, does that tell you something about whether the process works?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-3.png"
                    },
                    {
                        "id":  4,
@@ -168,7 +171,8 @@
                                                 "Which of those challenges resonates most with your team right now?",
                                                 "If you could wave a magic wand and fix one thing about how you generate new business, what would it be?",
                                                 "How is your team currently handling outbound prospecting today?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-4.png"
                    },
                    {
                        "id":  5,
@@ -214,7 +218,8 @@
                        "confirmQuestions":  [
                                                 "Does that make sense — the one-company-per-market approach?",
                                                 "Can you see how having exclusive access in your market would be an advantage over your competitors?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-5.png"
                    },
                    {
                        "id":  6,
@@ -251,7 +256,8 @@
                        "confirmQuestions":  [
                                                 "Does this high-level flow make sense before I break down each phase?",
                                                 "When you look at this process, does anything jump out that you want me to spend more time on?"
-                                            ]
+                                            ],
+                       "slideImage":  null
                    },
                    {
                        "id":  7,
@@ -288,7 +294,8 @@
                        "confirmQuestions":  [
                                                 "How does your team currently build and maintain your prospect lists?",
                                                 "Does the idea of a shared, constantly-improving database make sense for the kind of outreach you need?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-6.png"
                    },
                    {
                        "id":  8,
@@ -325,7 +332,8 @@
                        "confirmQuestions":  [
                                                 "When you think about your buyers, which of those channels — mail, email, LinkedIn, phone — do you think would resonate most?",
                                                 "Does the multi-channel approach make sense for reaching decision-makers in your space?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-7.png"
                    },
                    {
                        "id":  9,
@@ -362,7 +370,8 @@
                        "confirmQuestions":  [
                                                 "What kind of competitive intel would be most valuable for your sales team to have?",
                                                 "Is your team currently capturing any of this type of data when they talk to prospects?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-8.png"
                    },
                    {
                        "id":  10,
@@ -399,7 +408,8 @@
                        "confirmQuestions":  [
                                                 "How many attempts does your team typically make before they move on from a prospect?",
                                                 "Does that story about the trade show business cards sound familiar at all?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-9.png"
                    },
                    {
                        "id":  11,
@@ -436,7 +446,8 @@
                        "confirmQuestions":  [
                                                 "How does your team currently handle the prospects who say \u0027not right now\u0027?",
                                                 "When you hear that 46% of appointments come from nurture, does that change how you think about follow-up?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-10.png"
                    },
                    {
                        "id":  12,
@@ -473,7 +484,8 @@
                        "confirmQuestions":  [
                                                 "Does that handoff process sound like it would work well for your sales reps?",
                                                 "What matters most to you when it comes to appointment quality — the company, the title, or the intent?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-11.png"
                    },
                    {
                        "id":  13,
@@ -510,7 +522,8 @@
                        "confirmQuestions":  [
                                                 "Which of those creative assets would be most useful for your team right now?",
                                                 "How does your team currently arm themselves for sales conversations — do they have the tools they need?"
-                                            ]
+                                            ],
+                       "slideImage":  null
                    },
                    {
                        "id":  14,
@@ -547,7 +560,8 @@
                        "confirmQuestions":  [
                                                 "When you look at that cost comparison, does the math track with what you\u0027ve seen in your own hiring?",
                                                 "Does the idea of getting an entire team versus one person change how you think about the investment?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-12.png"
                    },
                    {
                        "id":  15,
@@ -584,7 +598,8 @@
                        "confirmQuestions":  [
                                                 "Is that level of transparency and real-time visibility something your team would actually use?",
                                                 "Do you have a CRM today, or is that something you\u0027re still figuring out?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-13.png"
                    },
                    {
                        "id":  16,
@@ -621,7 +636,8 @@
                        "confirmQuestions":  [
                                                 "Does 30 days feel reasonable for getting fully ramped and representing your company well?",
                                                 "Based on what I just described, what would worry you most about someone calling on your behalf?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-15.png"
                    },
                    {
                        "id":  17,
@@ -649,7 +665,8 @@
                        "confirmQuestions":  [
                                                 "If someone with that resume walked into your office tomorrow, what would you do?",
                                                 "When you think about what we\u0027ve covered so far, does the value start to make sense?"
-                                            ]
+                                            ],
+                       "slideImage":  null
                    },
                    {
                        "id":  18,
@@ -714,7 +731,8 @@
                                                 "Based on everything we covered today, where does your head go?",
                                                 "What would need to be true for this to make sense for your business right now?",
                                                 "Is there anything I didn\u0027t cover that would help you make a decision?"
-                                            ]
+                                            ],
+                       "slideImage":  "/slides/slide-14.png"
                    }
                ]
 }

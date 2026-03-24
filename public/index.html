@@ -65,9 +65,10 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 .slide-thumb .title{font-size:11px;font-weight:500;color:var(--text-sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slide-thumb.active .title{color:var(--text)}
 
-/* CENTER PANEL — PDF SLIDE */
-.center-panel{flex:1;overflow:hidden;background:#000;position:relative}
-.center-panel iframe{width:100%;height:100%;border:none}
+/* CENTER PANEL — SLIDE IMAGE */
+.center-panel{flex:1;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;position:relative}
+.center-panel img{max-width:100%;max-height:100%;object-fit:contain}
+.no-slide-msg{color:var(--text-sec);font-size:14px;text-align:center}
 
 /* RIGHT PANEL — WORD TRACK + OBJECTIONS */
 .right-panel{width:420px;background:var(--bg-panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
@@ -203,9 +204,10 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
     <!-- LEFT: Slide Nav -->
     <div class="left-panel" id="left-panel"></div>
 
-    <!-- CENTER: Actual PDF Slide -->
+    <!-- CENTER: Slide Image -->
     <div class="center-panel" id="center-panel">
-      <iframe id="pdf-frame" src="about:blank"></iframe>
+      <img id="slide-img" src="" alt="Slide">
+      <div class="no-slide-msg" id="no-slide-msg" style="display:none">Word track only — no deck slide for this section</div>
     </div>
 
     <!-- RIGHT: Word Track + Objections (scrollable together) -->
@@ -346,9 +348,16 @@ function goToSlide(idx) {
   const thumbs = document.querySelectorAll('.slide-thumb');
   if (thumbs[idx]) thumbs[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 
-  // Show actual PDF page in iframe
-  if (s.pdfPage) {
-    document.getElementById('pdf-frame').src = '/deck.pdf#page=' + s.pdfPage + '&toolbar=0&navpanes=0&scrollbar=0&view=Fit';
+  // Show slide image
+  const img = document.getElementById('slide-img');
+  const noMsg = document.getElementById('no-slide-msg');
+  if (s.slideImage) {
+    img.src = s.slideImage;
+    img.style.display = 'block';
+    noMsg.style.display = 'none';
+  } else {
+    img.style.display = 'none';
+    noMsg.style.display = 'block';
   }
 
   // Top bar
