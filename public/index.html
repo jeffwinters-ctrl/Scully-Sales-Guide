@@ -187,14 +187,6 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
   </div>
 </div>
 
-<!-- LOADING OVERLAY -->
-<div id="loading-overlay" class="hidden">
-  <span class="brand" style="color:#E63946;font-size:28px;font-weight:800;margin-bottom:8px">Abstrakt</span>
-  <div class="loading-text">Loading slide deck...</div>
-  <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loading-bar-fill"></div></div>
-  <div class="loading-pct" id="loading-pct">0%</div>
-</div>
-
 <!-- APP -->
 <div id="app">
   <div class="top-bar">
@@ -320,41 +312,22 @@ async function doAuth() {
 }
 
 async function init() {
-  // Show loading overlay
-  const overlay = document.getElementById('loading-overlay');
-  overlay.classList.remove('hidden');
-
   const slidesRes = await fetch('/api/slides').then(r => r.json());
   slides = slidesRes.slides;
-
-  await loadPdf();
-
-  overlay.classList.add('hidden');
   buildNav();
   buildDots();
   goToSlide(0);
   startTimer();
+  loadPdf().then(() => { if (slides[currentSlide].pdfPage) renderPage(slides[currentSlide].pdfPage); });
 }
 
 async function loadPdf() {
-  const bar = document.getElementById('loading-bar-fill');
-  const pct = document.getElementById('loading-pct');
   try {
-    bar.style.width = '30%';
-    pct.textContent = 'Downloading deck...';
-    const response = await fetch('/deck.pdf');
-    bar.style.width = '60%';
-    pct.textContent = 'Processing...';
-    const data = await response.arrayBuffer();
-    bar.style.width = '80%';
-    pct.textContent = 'Rendering...';
-    pdfDoc = await pdfjsLib.getDocument({ data }).promise;
-    bar.style.width = '100%';
-    pct.textContent = 'Ready';
+    pdfDoc = await pdfjsLib.getDocument('/deck.pdf').promise;
+    document.getElementById('slide-loading').textContent = '';
   } catch (e) {
-    console.error('Failed to load PDF', e);
-    pct.textContent = 'Error loading deck - try refreshing';
-    document.getElementById('slide-loading').textContent = 'Failed to load slide deck';
+    console.error('PDF load error:', e);
+    document.getElementById('slide-loading').textContent = 'Could not load deck PDF';
   }
 }
 
