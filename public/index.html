@@ -91,6 +91,12 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 .wt-body .ask-prospect{color:var(--red);font-style:italic;font-size:13px;margin:10px 0}
 .wt-transition{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-style:italic;color:var(--text-sec);font-size:13px}
 
+/* CHECK-IN QUESTIONS */
+.confirm-section{border-top:1px solid var(--border);padding-top:16px;margin-bottom:20px}
+.confirm-section-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--green);margin-bottom:10px}
+.confirm-q{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg-card);border-radius:6px;margin-bottom:6px;font-size:13px;line-height:1.6;color:#ddd;border-left:3px solid var(--green)}
+.confirm-q .q-icon{color:var(--green);font-weight:700;font-size:15px;flex-shrink:0;margin-top:1px}
+
 /* OBJECTIONS SECTION */
 .obj-section{border-top:1px solid var(--border);padding-top:16px}
 .obj-section-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px}
@@ -208,6 +214,10 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
           <div class="wt-section-label"><span>SCRIPT</span><button class="wt-copy-btn" id="copy-btn">Copy</button></div>
           <div class="wt-body" id="wt-body"></div>
           <div class="wt-transition" id="wt-transition"></div>
+        </div>
+        <div class="confirm-section" id="confirm-section">
+          <div class="confirm-section-label">CHECK-IN QUESTIONS</div>
+          <div id="confirm-list"></div>
         </div>
         <div class="obj-section" id="obj-section">
           <div class="obj-section-label">OBJECTION HANDLING</div>
@@ -397,6 +407,21 @@ function goToSlide(idx) {
   if (s.wordTrack.transitionLine) { trans.textContent = s.wordTrack.transitionLine; trans.style.display = 'block'; }
   else { trans.style.display = 'none'; }
 
+  // Check-in questions
+  const confirmList = document.getElementById('confirm-list');
+  confirmList.innerHTML = '';
+  if (s.confirmQuestions && s.confirmQuestions.length) {
+    s.confirmQuestions.forEach(q => {
+      const div = document.createElement('div');
+      div.className = 'confirm-q';
+      div.innerHTML = '<span class="q-icon">?</span><span>' + esc(q) + '</span>';
+      confirmList.appendChild(div);
+    });
+    document.getElementById('confirm-section').style.display = 'block';
+  } else {
+    document.getElementById('confirm-section').style.display = 'none';
+  }
+
   // Objections
   renderObjections(s.objections, document.getElementById('objections-list'));
   document.getElementById('obj-section').style.display = (s.objections && s.objections.length) ? 'block' : 'none';
@@ -408,7 +433,7 @@ function goToSlide(idx) {
   document.getElementById('mobile-body').innerHTML =
     '<div style="margin-bottom:16px"><div class="wt-section-label" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px">SCRIPT</div><div class="wt-body">' + formatWordTrack(s.wordTrack.script) + '</div>' +
     (s.wordTrack.transitionLine ? '<div class="wt-transition">' + esc(s.wordTrack.transitionLine) + '</div>' : '') +
-    '</div>' + buildObjectionsHTML(s.objections);
+    '</div>' + buildConfirmHTML(s.confirmQuestions) + buildObjectionsHTML(s.objections);
 
   // Bind mobile accordion events
   document.getElementById('mobile-body').querySelectorAll('.objection-header').forEach(h => {
@@ -463,6 +488,15 @@ function renderObjections(objs, container) {
     });
     container.appendChild(item);
   });
+}
+
+function buildConfirmHTML(qs) {
+  if (!qs || !qs.length) return '';
+  let html = '<div class="confirm-section" style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:20px"><div class="confirm-section-label" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--green);margin-bottom:10px">CHECK-IN QUESTIONS</div>';
+  qs.forEach(q => {
+    html += '<div class="confirm-q" style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg-card);border-radius:6px;margin-bottom:6px;font-size:13px;line-height:1.6;color:#ddd;border-left:3px solid var(--green)"><span style="color:var(--green);font-weight:700;font-size:15px;flex-shrink:0;margin-top:1px">?</span><span>' + esc(q) + '</span></div>';
+  });
+  return html + '</div>';
 }
 
 function buildObjectionsHTML(objs) {
