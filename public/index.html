@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Abstrakt SalesDeck Coach</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -33,7 +34,7 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 .pin-error{color:var(--red);font-size:13px;margin-top:12px;min-height:20px}
 @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 
-/* APP LAYOUT */
+/* APP */
 #app{display:none;height:100vh;flex-direction:column}
 #app.visible{display:flex}
 
@@ -52,69 +53,63 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 .lock-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;font-family:inherit;transition:color .2s}
 .lock-btn:hover{color:var(--red)}
 
-/* MAIN CONTENT */
+/* MAIN */
 .main{display:flex;flex:1;overflow:hidden}
 
 /* LEFT PANEL */
-.left-panel{width:220px;background:var(--bg-panel);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;padding:8px}
+.left-panel{width:200px;background:var(--bg-panel);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;padding:8px}
 .slide-thumb{padding:10px 12px;border-radius:6px;cursor:pointer;margin-bottom:4px;border-left:3px solid transparent;transition:all .2s;display:flex;align-items:center;gap:10px}
 .slide-thumb:hover{background:var(--bg-hover)}
 .slide-thumb.active{background:var(--red-muted);border-left-color:var(--red)}
 .slide-thumb .num{font-size:13px;font-weight:700;color:var(--text-muted);min-width:20px}
 .slide-thumb.active .num{color:var(--red)}
-.slide-thumb .title{font-size:12px;font-weight:500;color:var(--text-sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.slide-thumb .title{font-size:11px;font-weight:500;color:var(--text-sec);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slide-thumb.active .title{color:var(--text)}
 
-/* CENTER PANEL */
-.center-panel{flex:1;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:32px 24px;position:relative}
-.slide-card{max-width:800px;width:100%;background:var(--bg-card);border-radius:12px;padding:40px;box-shadow:0 2px 12px rgba(0,0,0,.3);animation:fadeIn .2s}
-.slide-card h2{font-size:24px;font-weight:700;padding-bottom:14px;border-bottom:2px solid var(--red);margin-bottom:20px}
-.slide-card ul{padding-left:20px;line-height:1.8}
-.slide-card li{margin-bottom:6px;font-size:15px;color:#ccc}
-.slide-card p{font-size:15px;line-height:1.7;color:#ccc;margin-bottom:12px}
-.slide-card strong{color:var(--text)}
-.slide-card table{width:100%;border-collapse:collapse}
-.watermark{position:absolute;bottom:12px;right:16px;font-size:10px;color:#333}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+/* CENTER PANEL — PDF SLIDE */
+.center-panel{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000;position:relative}
+.center-panel canvas{max-width:100%;max-height:100%;object-fit:contain}
+.slide-loading{position:absolute;color:var(--text-sec);font-size:14px}
 
-/* RIGHT PANEL */
-.right-panel{width:380px;background:var(--bg-panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.tab-bar{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
-.tab-btn{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:600;letter-spacing:.5px;cursor:pointer;background:none;border:none;color:var(--text-muted);border-bottom:3px solid transparent;transition:all .2s;font-family:inherit}
-.tab-btn:hover{color:var(--text)}
-.tab-btn.active{color:var(--text);border-bottom-color:var(--red)}
-.tab-content{flex:1;overflow-y:auto;padding:16px}
-.tab-pane{display:none}
-.tab-pane.active{display:block}
+/* RIGHT PANEL — WORD TRACK + OBJECTIONS */
+.right-panel{width:420px;background:var(--bg-panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+.right-panel-header{padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.right-panel-header h3{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.5px}
+.right-panel-header .slide-name{font-size:12px;color:var(--text-sec);margin-top:2px}
+.right-scroll{flex:1;overflow-y:auto;padding:16px}
 
-/* WORD TRACK */
-.wt-copy-btn{float:right;background:var(--bg-card);border:1px solid var(--border);color:var(--text-sec);border-radius:4px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+/* WORD TRACK SECTION */
+.wt-section{margin-bottom:20px}
+.wt-section-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.wt-copy-btn{background:var(--bg-card);border:1px solid var(--border);color:var(--text-sec);border-radius:4px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
 .wt-copy-btn:hover{border-color:var(--red);color:var(--text)}
-.wt-body{font-size:15px;line-height:1.75;color:#ddd}
-.wt-body p{margin-bottom:14px}
+.wt-body{font-size:14px;line-height:1.75;color:#ddd}
+.wt-body p{margin-bottom:12px}
 .wt-body .highlight{background:rgba(230,57,70,0.2);color:var(--text);padding:1px 4px;border-radius:3px;font-weight:600}
 .wt-body .placeholder{background:rgba(230,57,70,0.3);color:var(--red);padding:2px 6px;border-radius:3px;font-weight:700}
-.wt-body .stage-dir{background:rgba(255,167,38,0.1);border-left:4px solid var(--amber);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0;font-style:italic;color:var(--amber);font-size:14px}
-.wt-body .ask-prospect{color:var(--red);font-style:italic;font-size:14px;margin:10px 0}
-.wt-transition{margin-top:20px;padding-top:14px;border-top:1px solid var(--border);font-style:italic;color:var(--text-sec);font-size:14px}
+.wt-body .stage-dir{background:rgba(255,167,38,0.1);border-left:4px solid var(--amber);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0;font-style:italic;color:var(--amber);font-size:13px}
+.wt-body .ask-prospect{color:var(--red);font-style:italic;font-size:13px;margin:10px 0}
+.wt-transition{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-style:italic;color:var(--text-sec);font-size:13px}
 
-/* OBJECTIONS */
+/* OBJECTIONS SECTION */
+.obj-section{border-top:1px solid var(--border);padding-top:16px}
+.obj-section-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px}
 .objection-item{margin-bottom:8px;border-radius:6px;overflow:hidden;background:var(--bg-card)}
-.objection-header{padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
+.objection-header{padding:10px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
 .objection-header:hover{background:var(--bg-hover)}
-.objection-header .q{font-size:14px;font-weight:600;color:var(--red);flex:1}
-.objection-header .chevron{color:var(--text-muted);font-size:12px;transition:transform .2s}
+.objection-header .q{font-size:13px;font-weight:600;color:var(--red);flex:1}
+.objection-header .chevron{color:var(--text-muted);font-size:11px;transition:transform .2s;flex-shrink:0;margin-left:8px}
 .objection-item.open .chevron{transform:rotate(180deg)}
 .objection-body{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .objection-item.open .objection-body{max-height:600px}
-.objection-body-inner{padding:0 14px 14px}
-.resp-step{margin-bottom:10px}
-.resp-label{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;display:block}
+.objection-body-inner{padding:0 12px 12px}
+.resp-step{margin-bottom:8px}
+.resp-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px;display:block}
 .resp-label.ack{color:var(--text-sec)}
 .resp-label.ref{color:var(--amber)}
 .resp-label.red{color:#64B5F6}
 .resp-label.cls{color:var(--red)}
-.resp-text{font-size:14px;line-height:1.6;color:#bbb}
+.resp-text{font-size:13px;line-height:1.6;color:#bbb}
 
 /* BOTTOM BAR */
 .bottom-bar{height:48px;background:var(--bg-panel);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0}
@@ -145,8 +140,8 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 #mobile-modal{display:none;position:fixed;inset:0;background:var(--bg-main);z-index:800;flex-direction:column}
 #mobile-modal.visible{display:flex}
 .modal-header{height:48px;background:var(--bg-panel);display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--border)}
-.modal-close{background:none;border:none;color:var(--text);font-size:20px;cursor:pointer}
-.modal-body{flex:1;overflow-y:auto}
+.modal-close{background:none;border:none;color:var(--text);font-size:24px;cursor:pointer}
+.modal-body{flex:1;overflow-y:auto;padding:16px}
 
 /* RESPONSIVE */
 @media(max-width:1023px){
@@ -158,8 +153,6 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
   .left-panel{display:none}
   .right-panel{display:none}
   .mobile-script-btn{display:block}
-  .slide-card{padding:24px 16px}
-  .center-panel{padding:16px 8px}
   .top-bar .logo{font-size:13px}
   .slide-dots{display:none}
 }
@@ -181,7 +174,6 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 
 <!-- APP -->
 <div id="app">
-  <!-- TOP BAR -->
   <div class="top-bar">
     <div class="logo"><span>Abstrakt</span> SalesDeck Coach</div>
     <div class="center">
@@ -195,63 +187,52 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
     </div>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
-    <!-- LEFT PANEL -->
+    <!-- LEFT: Slide Nav -->
     <div class="left-panel" id="left-panel"></div>
 
-    <!-- CENTER PANEL -->
-    <div class="center-panel">
-      <div class="slide-card" id="slide-card">
-        <h2 id="slide-title"></h2>
-        <div id="slide-body"></div>
-      </div>
-      <div class="watermark">Abstrakt SalesDeck Coach</div>
+    <!-- CENTER: Actual PDF Slide -->
+    <div class="center-panel" id="center-panel">
+      <canvas id="pdf-canvas"></canvas>
+      <div class="slide-loading" id="slide-loading">Loading slide...</div>
     </div>
 
-    <!-- RIGHT PANEL -->
+    <!-- RIGHT: Word Track + Objections (scrollable together) -->
     <div class="right-panel">
-      <div class="tab-bar">
-        <button class="tab-btn active" data-tab="wordtrack">WORD TRACK</button>
-        <button class="tab-btn" data-tab="objections">OBJECTIONS</button>
+      <div class="right-panel-header">
+        <h3>WORD TRACK</h3>
+        <div class="slide-name" id="right-slide-name"></div>
       </div>
-      <div class="tab-content">
-        <div class="tab-pane active" id="tab-wordtrack">
-          <button class="wt-copy-btn" id="copy-btn">Copy</button>
+      <div class="right-scroll" id="right-scroll">
+        <div class="wt-section">
+          <div class="wt-section-label"><span>SCRIPT</span><button class="wt-copy-btn" id="copy-btn">Copy</button></div>
           <div class="wt-body" id="wt-body"></div>
           <div class="wt-transition" id="wt-transition"></div>
         </div>
-        <div class="tab-pane" id="tab-objections">
+        <div class="obj-section" id="obj-section">
+          <div class="obj-section-label">OBJECTION HANDLING</div>
           <div id="objections-list"></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- BOTTOM BAR -->
   <div class="bottom-bar">
     <button class="nav-btn" id="prev-btn">&larr; Previous</button>
     <div class="slide-dots" id="slide-dots"></div>
     <button class="nav-btn" id="next-btn">Next &rarr;</button>
   </div>
 
-  <!-- MOBILE SCRIPT BUTTON -->
   <button class="mobile-script-btn" id="mobile-script-btn">&#9776;</button>
 </div>
 
 <!-- MOBILE MODAL -->
 <div id="mobile-modal">
   <div class="modal-header">
-    <div class="tab-bar" style="border:none;flex:1">
-      <button class="tab-btn active" data-tab="m-wordtrack">WORD TRACK</button>
-      <button class="tab-btn" data-tab="m-objections">OBJECTIONS</button>
-    </div>
+    <span style="font-weight:700;font-size:14px">Word Track & Objections</span>
     <button class="modal-close" id="modal-close">&times;</button>
   </div>
-  <div class="modal-body">
-    <div class="tab-pane active" id="tab-m-wordtrack" style="padding:16px"></div>
-    <div class="tab-pane" id="tab-m-objections" style="padding:16px"></div>
-  </div>
+  <div class="modal-body" id="mobile-body"></div>
 </div>
 
 <!-- SHORTCUTS OVERLAY -->
@@ -261,21 +242,22 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
     <div class="sc-row"><span class="sc-key">&rarr; / &darr;</span><span class="sc-desc">Next slide</span></div>
     <div class="sc-row"><span class="sc-key">&larr; / &uarr;</span><span class="sc-desc">Previous slide</span></div>
     <div class="sc-row"><span class="sc-key">1-9, 0</span><span class="sc-desc">Jump to slide</span></div>
-    <div class="sc-row"><span class="sc-key">T</span><span class="sc-desc">Word Track tab</span></div>
-    <div class="sc-row"><span class="sc-key">O</span><span class="sc-desc">Objections tab</span></div>
     <div class="sc-row"><span class="sc-key">?</span><span class="sc-desc">Toggle shortcuts</span></div>
     <div class="sc-row"><span class="sc-key">Esc</span><span class="sc-desc">Close overlay</span></div>
-    <div class="sc-close"><button onclick="toggleShortcuts()">Close</button></div>
+    <div class="sc-close"><button onclick="document.getElementById('shortcuts-overlay').classList.remove('visible')">Close</button></div>
   </div>
 </div>
 
 <script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
 let slides = [];
 let currentSlide = 0;
 let timerInterval = null;
 let timerSeconds = 0;
+let pdfDoc = null;
+let renderingPage = false;
 
-// PIN AUTH
 const pinScreen = document.getElementById('pin-screen');
 const pinInput = document.getElementById('pin-input');
 const pinBtn = document.getElementById('pin-btn');
@@ -285,7 +267,7 @@ const app = document.getElementById('app');
 if (sessionStorage.getItem('authed') === 'true') {
   pinScreen.classList.add('hidden');
   app.classList.add('visible');
-  loadSlides();
+  init();
 }
 
 pinBtn.addEventListener('click', doAuth);
@@ -295,50 +277,83 @@ async function doAuth() {
   const pin = pinInput.value.trim();
   if (!pin) return;
   try {
-    const res = await fetch('/api/auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pin })
-    });
+    const res = await fetch('/api/auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pin }) });
     const data = await res.json();
     if (data.success) {
       sessionStorage.setItem('authed', 'true');
       pinScreen.classList.add('hidden');
       app.classList.add('visible');
-      loadSlides();
+      init();
     } else {
       pinInput.classList.add('error');
       pinError.textContent = 'Invalid access code';
       setTimeout(() => pinInput.classList.remove('error'), 400);
     }
-  } catch {
-    pinError.textContent = 'Connection error';
-  }
+  } catch { pinError.textContent = 'Connection error'; }
 }
 
-// LOAD SLIDES
-async function loadSlides() {
+async function init() {
+  const [slidesRes] = await Promise.all([
+    fetch('/api/slides').then(r => r.json()),
+    loadPdf()
+  ]);
+  slides = slidesRes.slides;
+  buildNav();
+  buildDots();
+  goToSlide(0);
+  startTimer();
+}
+
+async function loadPdf() {
   try {
-    const res = await fetch('/api/slides');
-    const data = await res.json();
-    slides = data.slides;
-    buildNav();
-    buildDots();
-    goToSlide(0);
-    startTimer();
+    pdfDoc = await pdfjsLib.getDocument('/deck.pdf').promise;
   } catch (e) {
-    console.error('Failed to load slides', e);
+    console.error('Failed to load PDF', e);
+    document.getElementById('slide-loading').textContent = 'Failed to load slide deck PDF';
   }
 }
 
-// BUILD NAV
+async function renderPage(pageNum) {
+  if (!pdfDoc || renderingPage) return;
+  if (pageNum < 1 || pageNum > pdfDoc.numPages) {
+    document.getElementById('slide-loading').textContent = 'Page ' + pageNum + ' not found';
+    document.getElementById('slide-loading').style.display = 'block';
+    return;
+  }
+  renderingPage = true;
+  document.getElementById('slide-loading').style.display = 'block';
+  const canvas = document.getElementById('pdf-canvas');
+  canvas.style.display = 'none';
+  try {
+    const page = await pdfDoc.getPage(pageNum);
+    const container = document.getElementById('center-panel');
+    const containerW = container.clientWidth;
+    const containerH = container.clientHeight;
+    const viewport = page.getViewport({ scale: 1 });
+    const scaleW = containerW / viewport.width;
+    const scaleH = containerH / viewport.height;
+    const scale = Math.min(scaleW, scaleH) * 0.95;
+    const scaledVP = page.getViewport({ scale });
+    canvas.width = scaledVP.width;
+    canvas.height = scaledVP.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport: scaledVP }).promise;
+    canvas.style.display = 'block';
+    document.getElementById('slide-loading').style.display = 'none';
+  } catch (e) {
+    document.getElementById('slide-loading').textContent = 'Error rendering slide';
+    console.error(e);
+  }
+  renderingPage = false;
+}
+
 function buildNav() {
   const panel = document.getElementById('left-panel');
   panel.innerHTML = '';
   slides.forEach((s, i) => {
     const d = document.createElement('div');
     d.className = 'slide-thumb' + (i === 0 ? ' active' : '');
-    d.innerHTML = `<span class="num">${s.id}</span><span class="title">${esc(s.title)}</span>`;
+    d.innerHTML = '<span class="num">' + s.id + '</span><span class="title">' + esc(s.title) + '</span>';
     d.addEventListener('click', () => goToSlide(i));
     panel.appendChild(d);
   });
@@ -355,70 +370,71 @@ function buildDots() {
   });
 }
 
-// GO TO SLIDE
 function goToSlide(idx) {
   if (idx < 0 || idx >= slides.length) return;
   currentSlide = idx;
   const s = slides[idx];
 
-  // Update nav
+  // Nav highlights
   document.querySelectorAll('.slide-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
   document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-
-  // Auto-scroll nav
   const thumbs = document.querySelectorAll('.slide-thumb');
   if (thumbs[idx]) thumbs[idx].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 
-  // Slide content
-  const card = document.getElementById('slide-card');
-  card.style.animation = 'none';
-  card.offsetHeight;
-  card.style.animation = '';
-  document.getElementById('slide-title').textContent = s.title;
-  document.getElementById('slide-body').innerHTML = s.content.body;
+  // Render actual PDF page
+  if (s.pdfPage) renderPage(s.pdfPage);
 
-  // Indicator & progress
-  document.getElementById('slide-indicator').textContent = `Slide ${idx + 1} of ${slides.length}`;
+  // Top bar
+  document.getElementById('slide-indicator').textContent = 'Slide ' + (idx + 1) + ' of ' + slides.length;
   document.getElementById('progress-fill').style.width = ((idx + 1) / slides.length * 100) + '%';
+
+  // Right panel header
+  document.getElementById('right-slide-name').textContent = s.title;
 
   // Word track
   document.getElementById('wt-body').innerHTML = formatWordTrack(s.wordTrack.script);
   const trans = document.getElementById('wt-transition');
-  trans.textContent = s.wordTrack.transitionLine || '';
-  trans.style.display = s.wordTrack.transitionLine ? 'block' : 'none';
+  if (s.wordTrack.transitionLine) { trans.textContent = s.wordTrack.transitionLine; trans.style.display = 'block'; }
+  else { trans.style.display = 'none'; }
 
   // Objections
-  renderObjections(s.objections);
+  renderObjections(s.objections, document.getElementById('objections-list'));
+  document.getElementById('obj-section').style.display = (s.objections && s.objections.length) ? 'block' : 'none';
 
-  // Mobile panels
-  document.getElementById('tab-m-wordtrack').innerHTML =
-    '<div class="wt-body">' + formatWordTrack(s.wordTrack.script) + '</div>' +
-    (s.wordTrack.transitionLine ? '<div class="wt-transition">' + esc(s.wordTrack.transitionLine) + '</div>' : '');
-  renderMobileObjections(s.objections);
+  // Scroll right panel to top
+  document.getElementById('right-scroll').scrollTop = 0;
+
+  // Mobile content
+  document.getElementById('mobile-body').innerHTML =
+    '<div style="margin-bottom:16px"><div class="wt-section-label" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px">SCRIPT</div><div class="wt-body">' + formatWordTrack(s.wordTrack.script) + '</div>' +
+    (s.wordTrack.transitionLine ? '<div class="wt-transition">' + esc(s.wordTrack.transitionLine) + '</div>' : '') +
+    '</div>' + buildObjectionsHTML(s.objections);
+
+  // Bind mobile accordion events
+  document.getElementById('mobile-body').querySelectorAll('.objection-header').forEach(h => {
+    h.addEventListener('click', () => {
+      const item = h.parentElement;
+      const wasOpen = item.classList.contains('open');
+      item.parentElement.querySelectorAll('.objection-item').forEach(x => x.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
 
   // Nav buttons
   document.getElementById('prev-btn').disabled = idx === 0;
   document.getElementById('next-btn').disabled = idx === slides.length - 1;
 }
 
-// FORMAT WORD TRACK
 function formatWordTrack(raw) {
   let text = raw;
-  // Stage directions [[...]]
   text = text.replace(/\[\[([^\]]+)\]\]/g, '<div class="stage-dir">$1</div>');
-  // Bold **...**
   text = text.replace(/\*\*\[([^\]]+)\]\*\*/g, '<span class="placeholder">[$1]</span>');
   text = text.replace(/\*\*([^*]+)\*\*/g, '<span class="highlight">$1</span>');
-  // Standalone placeholders [...]
   text = text.replace(/\[([A-Z][^\]]*)\]/g, '<span class="placeholder">[$1]</span>');
-  // Italic *...*
   text = text.replace(/\*([^*]+)\*/g, '<span class="ask-prospect">$1</span>');
-  // Bullets
   text = text.replace(/^• (.+)$/gm, '<li>$1</li>');
   text = text.replace(/(<li>.*<\/li>\n?)+/gs, m => '<ul style="padding-left:20px;margin:8px 0">' + m + '</ul>');
-  // Numbered lists
   text = text.replace(/^(\d+)\. (.+)$/gm, '<div style="margin-left:16px;margin-bottom:4px"><span class="highlight" style="margin-right:6px">$1.</span>$2</div>');
-  // Paragraphs
   text = text.split('\n\n').map(p => {
     if (p.startsWith('<div') || p.startsWith('<ul') || p.startsWith('<span') || p.startsWith('<li')) return p;
     return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
@@ -426,87 +442,48 @@ function formatWordTrack(raw) {
   return text;
 }
 
-// RENDER OBJECTIONS
-function renderObjections(objs) {
-  const list = document.getElementById('objections-list');
-  list.innerHTML = '';
-  if (!objs || !objs.length) {
-    list.innerHTML = '<p style="color:var(--text-muted);font-size:14px;padding:8px">No objections for this slide.</p>';
-    return;
-  }
-  objs.forEach((o, i) => {
-    const item = document.createElement('div');
-    item.className = 'objection-item';
-    item.innerHTML = `
-      <div class="objection-header">
-        <span class="q">"${esc(o.objection)}"</span>
-        <span class="chevron">&#9660;</span>
-      </div>
-      <div class="objection-body">
-        <div class="objection-body-inner">
-          <div class="resp-step"><span class="resp-label ack">Acknowledge</span><div class="resp-text">${esc(o.response.acknowledge)}</div></div>
-          <div class="resp-step"><span class="resp-label ref">Reframe</span><div class="resp-text">${esc(o.response.reframe)}</div></div>
-          <div class="resp-step"><span class="resp-label red">Redirect</span><div class="resp-text">${esc(o.response.redirect)}</div></div>
-          <div class="resp-step"><span class="resp-label cls">Close</span><div class="resp-text">${esc(o.response.close)}</div></div>
-        </div>
-      </div>`;
-    item.querySelector('.objection-header').addEventListener('click', () => {
-      const wasOpen = item.classList.contains('open');
-      list.querySelectorAll('.objection-item').forEach(x => x.classList.remove('open'));
-      if (!wasOpen) item.classList.add('open');
-    });
-    list.appendChild(item);
-  });
-}
-
-function renderMobileObjections(objs) {
-  const list = document.getElementById('tab-m-objections');
-  list.innerHTML = '';
-  if (!objs || !objs.length) {
-    list.innerHTML = '<p style="color:var(--text-muted);font-size:14px">No objections for this slide.</p>';
-    return;
-  }
+function renderObjections(objs, container) {
+  container.innerHTML = '';
+  if (!objs || !objs.length) return;
   objs.forEach(o => {
     const item = document.createElement('div');
     item.className = 'objection-item';
-    item.style.marginBottom = '8px';
-    item.innerHTML = `
-      <div class="objection-header"><span class="q">"${esc(o.objection)}"</span><span class="chevron">&#9660;</span></div>
-      <div class="objection-body"><div class="objection-body-inner">
-        <div class="resp-step"><span class="resp-label ack">Acknowledge</span><div class="resp-text">${esc(o.response.acknowledge)}</div></div>
-        <div class="resp-step"><span class="resp-label ref">Reframe</span><div class="resp-text">${esc(o.response.reframe)}</div></div>
-        <div class="resp-step"><span class="resp-label red">Redirect</span><div class="resp-text">${esc(o.response.redirect)}</div></div>
-        <div class="resp-step"><span class="resp-label cls">Close</span><div class="resp-text">${esc(o.response.close)}</div></div>
-      </div></div>`;
+    item.innerHTML =
+      '<div class="objection-header"><span class="q">"' + esc(o.objection) + '"</span><span class="chevron">&#9660;</span></div>' +
+      '<div class="objection-body"><div class="objection-body-inner">' +
+      '<div class="resp-step"><span class="resp-label ack">Acknowledge</span><div class="resp-text">' + esc(o.response.acknowledge) + '</div></div>' +
+      '<div class="resp-step"><span class="resp-label ref">Reframe</span><div class="resp-text">' + esc(o.response.reframe) + '</div></div>' +
+      '<div class="resp-step"><span class="resp-label red">Redirect</span><div class="resp-text">' + esc(o.response.redirect) + '</div></div>' +
+      '<div class="resp-step"><span class="resp-label cls">Close</span><div class="resp-text">' + esc(o.response.close) + '</div></div>' +
+      '</div></div>';
     item.querySelector('.objection-header').addEventListener('click', () => {
       const wasOpen = item.classList.contains('open');
-      list.querySelectorAll('.objection-item').forEach(x => x.classList.remove('open'));
+      container.querySelectorAll('.objection-item').forEach(x => x.classList.remove('open'));
       if (!wasOpen) item.classList.add('open');
     });
-    list.appendChild(item);
+    container.appendChild(item);
   });
 }
 
-// TABS
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const tab = btn.dataset.tab;
-    const parent = btn.closest('.tab-bar') || btn.parentElement;
-    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const container = btn.closest('.right-panel') || btn.closest('#mobile-modal');
-    if (container) {
-      container.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-      const pane = container.querySelector('#tab-' + tab);
-      if (pane) pane.classList.add('active');
-    }
+function buildObjectionsHTML(objs) {
+  if (!objs || !objs.length) return '';
+  let html = '<div class="obj-section" style="border-top:1px solid var(--border);padding-top:16px"><div class="obj-section-label" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px">OBJECTION HANDLING</div>';
+  objs.forEach(o => {
+    html += '<div class="objection-item" style="margin-bottom:8px;border-radius:6px;overflow:hidden;background:var(--bg-card)">' +
+      '<div class="objection-header"><span class="q">"' + esc(o.objection) + '"</span><span class="chevron">&#9660;</span></div>' +
+      '<div class="objection-body"><div class="objection-body-inner">' +
+      '<div class="resp-step"><span class="resp-label ack">Acknowledge</span><div class="resp-text">' + esc(o.response.acknowledge) + '</div></div>' +
+      '<div class="resp-step"><span class="resp-label ref">Reframe</span><div class="resp-text">' + esc(o.response.reframe) + '</div></div>' +
+      '<div class="resp-step"><span class="resp-label red">Redirect</span><div class="resp-text">' + esc(o.response.redirect) + '</div></div>' +
+      '<div class="resp-step"><span class="resp-label cls">Close</span><div class="resp-text">' + esc(o.response.close) + '</div></div>' +
+      '</div></div></div>';
   });
-});
+  return html + '</div>';
+}
 
-// COPY
+// Copy
 document.getElementById('copy-btn').addEventListener('click', () => {
-  const text = slides[currentSlide].wordTrack.script
-    .replace(/\*\*/g, '').replace(/\[\[([^\]]+)\]\]/g, '[$1]');
+  const text = slides[currentSlide].wordTrack.script.replace(/\*\*/g, '').replace(/\[\[([^\]]+)\]\]/g, '[$1]');
   navigator.clipboard.writeText(text).then(() => {
     const btn = document.getElementById('copy-btn');
     btn.textContent = 'Copied!';
@@ -514,41 +491,22 @@ document.getElementById('copy-btn').addEventListener('click', () => {
   });
 });
 
-// NAV BUTTONS
+// Nav
 document.getElementById('prev-btn').addEventListener('click', () => goToSlide(currentSlide - 1));
 document.getElementById('next-btn').addEventListener('click', () => goToSlide(currentSlide + 1));
+document.getElementById('lock-btn').addEventListener('click', () => { sessionStorage.removeItem('authed'); location.reload(); });
+document.getElementById('mobile-script-btn').addEventListener('click', () => document.getElementById('mobile-modal').classList.add('visible'));
+document.getElementById('modal-close').addEventListener('click', () => document.getElementById('mobile-modal').classList.remove('visible'));
+document.getElementById('shortcuts-btn').addEventListener('click', () => document.getElementById('shortcuts-overlay').classList.toggle('visible'));
 
-// LOCK
-document.getElementById('lock-btn').addEventListener('click', () => {
-  sessionStorage.removeItem('authed');
-  location.reload();
-});
-
-// MOBILE MODAL
-document.getElementById('mobile-script-btn').addEventListener('click', () => {
-  document.getElementById('mobile-modal').classList.add('visible');
-});
-document.getElementById('modal-close').addEventListener('click', () => {
-  document.getElementById('mobile-modal').classList.remove('visible');
-});
-
-// SHORTCUTS
-function toggleShortcuts() {
-  document.getElementById('shortcuts-overlay').classList.toggle('visible');
-}
-document.getElementById('shortcuts-btn').addEventListener('click', toggleShortcuts);
-
-// KEYBOARD
+// Keyboard
 document.addEventListener('keydown', e => {
-  if (document.getElementById('pin-screen').classList.contains('hidden') === false) return;
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
+  if (!pinScreen.classList.contains('hidden')) return;
+  if (e.target.tagName === 'INPUT') return;
   switch (e.key) {
     case 'ArrowRight': case 'ArrowDown': e.preventDefault(); goToSlide(currentSlide + 1); break;
     case 'ArrowLeft': case 'ArrowUp': e.preventDefault(); goToSlide(currentSlide - 1); break;
-    case 't': case 'T': document.querySelector('.right-panel .tab-btn[data-tab="wordtrack"]').click(); break;
-    case 'o': case 'O': document.querySelector('.right-panel .tab-btn[data-tab="objections"]').click(); break;
-    case '?': toggleShortcuts(); break;
+    case '?': document.getElementById('shortcuts-overlay').classList.toggle('visible'); break;
     case 'Escape':
       document.getElementById('shortcuts-overlay').classList.remove('visible');
       document.getElementById('mobile-modal').classList.remove('visible');
@@ -559,20 +517,18 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// TOUCH SWIPE
+// Touch swipe
 let touchStartX = 0;
-document.querySelector('.center-panel')?.addEventListener('touchstart', e => {
-  touchStartX = e.touches[0].clientX;
-});
-document.querySelector('.center-panel')?.addEventListener('touchend', e => {
+document.getElementById('center-panel').addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+document.getElementById('center-panel').addEventListener('touchend', e => {
   const diff = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(diff) > 60) {
-    if (diff < 0) goToSlide(currentSlide + 1);
-    else goToSlide(currentSlide - 1);
-  }
+  if (Math.abs(diff) > 60) { diff < 0 ? goToSlide(currentSlide + 1) : goToSlide(currentSlide - 1); }
 });
 
-// TIMER
+// Resize re-render
+window.addEventListener('resize', () => { if (slides.length) { const s = slides[currentSlide]; if (s.pdfPage) renderPage(s.pdfPage); } });
+
+// Timer
 function startTimer() {
   timerSeconds = 0;
   if (timerInterval) clearInterval(timerInterval);
@@ -588,11 +544,7 @@ function startTimer() {
   }, 1000);
 }
 
-function esc(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
+function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 </script>
 </body>
 </html>

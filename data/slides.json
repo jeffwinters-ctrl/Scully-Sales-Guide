@@ -5,6 +5,7 @@
   "slides": [
     {
       "id": 1,
+      "pdfPage": 1,
       "title": "Welcome & Agenda",
       "content": {
         "type": "mixed",
@@ -46,6 +47,7 @@
     },
     {
       "id": 2,
+      "pdfPage": 3,
       "title": "About Abstrakt",
       "content": {
         "type": "mixed",
@@ -78,6 +80,7 @@
     },
     {
       "id": 3,
+      "pdfPage": 4,
       "title": "Awards & Recognition",
       "content": {
         "type": "stats",
@@ -110,6 +113,7 @@
     },
     {
       "id": 4,
+      "pdfPage": 6,
       "title": "Your Current State",
       "content": {
         "type": "mixed",
@@ -151,6 +155,7 @@
     },
     {
       "id": 5,
+      "pdfPage": 8,
       "title": "Exclusive Market Initiative",
       "content": {
         "type": "mixed",
@@ -192,6 +197,7 @@
     },
     {
       "id": 6,
+      "pdfPage": 10,
       "title": "Omni-Channel Process",
       "content": {
         "type": "mixed",
@@ -224,6 +230,7 @@
     },
     {
       "id": 7,
+      "pdfPage": 12,
       "title": "Build Your Target Market",
       "content": {
         "type": "mixed",
@@ -256,6 +263,7 @@
     },
     {
       "id": 8,
+      "pdfPage": 13,
       "title": "The Process: Mail, Email, LinkedIn",
       "content": {
         "type": "mixed",
@@ -288,6 +296,7 @@
     },
     {
       "id": 9,
+      "pdfPage": 14,
       "title": "Qualify Target Companies",
       "content": {
         "type": "mixed",
@@ -320,6 +329,7 @@
     },
     {
       "id": 10,
+      "pdfPage": 15,
       "title": "KDM Introduction",
       "content": {
         "type": "mixed",
@@ -352,6 +362,7 @@
     },
     {
       "id": 11,
+      "pdfPage": 16,
       "title": "Nurture Qualified Companies",
       "content": {
         "type": "mixed",
@@ -384,6 +395,7 @@
     },
     {
       "id": 12,
+      "pdfPage": 17,
       "title": "New Sales Appointments",
       "content": {
         "type": "mixed",
@@ -416,6 +428,7 @@
     },
     {
       "id": 13,
+      "pdfPage": 18,
       "title": "Sales Toolkit",
       "content": {
         "type": "mixed",
@@ -448,6 +461,7 @@
     },
     {
       "id": 14,
+      "pdfPage": 19,
       "title": "Team & Technology",
       "content": {
         "type": "mixed",
@@ -480,6 +494,7 @@
     },
     {
       "id": 15,
+      "pdfPage": 20,
       "title": "Results Portal",
       "content": {
         "type": "mixed",
@@ -512,6 +527,7 @@
     },
     {
       "id": 16,
+      "pdfPage": 22,
       "title": "Implementation / Onboarding",
       "content": {
         "type": "mixed",
@@ -544,6 +560,7 @@
     },
     {
       "id": 17,
+      "pdfPage": 21,
       "title": "Captain Abstrakt",
       "content": {
         "type": "text",
@@ -567,6 +584,7 @@
     },
     {
       "id": 18,
+      "pdfPage": 21,
       "title": "Pricing & Close",
       "content": {
         "type": "mixed",
