@@ -340,41 +340,20 @@ async function loadPdf() {
   const bar = document.getElementById('loading-bar-fill');
   const pct = document.getElementById('loading-pct');
   try {
-    // Check cache first
-    const cache = await caches.open('deck-cache');
-    let resp = await cache.match('/deck.pdf');
-    let data;
-    if (resp) {
-      pct.textContent = 'Cached';
-      bar.style.width = '100%';
-      data = await resp.arrayBuffer();
-    } else {
-      // Download with progress
-      const response = await fetch('/deck.pdf');
-      const total = parseInt(response.headers.get('content-length') || '0', 10);
-      const reader = response.body.getReader();
-      const chunks = [];
-      let loaded = 0;
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        chunks.push(value);
-        loaded += value.length;
-        if (total > 0) {
-          const p = Math.round((loaded / total) * 100);
-          bar.style.width = p + '%';
-          pct.textContent = p + '%';
-        }
-      }
-      data = new Uint8Array(loaded);
-      let pos = 0;
-      for (const chunk of chunks) { data.set(chunk, pos); pos += chunk.length; }
-      // Cache for next time
-      await cache.put('/deck.pdf', new Response(data.buffer, { headers: { 'Content-Type': 'application/pdf' } }));
-    }
+    bar.style.width = '30%';
+    pct.textContent = 'Downloading deck...';
+    const response = await fetch('/deck.pdf');
+    bar.style.width = '60%';
+    pct.textContent = 'Processing...';
+    const data = await response.arrayBuffer();
+    bar.style.width = '80%';
+    pct.textContent = 'Rendering...';
     pdfDoc = await pdfjsLib.getDocument({ data }).promise;
+    bar.style.width = '100%';
+    pct.textContent = 'Ready';
   } catch (e) {
     console.error('Failed to load PDF', e);
+    pct.textContent = 'Error loading deck - try refreshing';
     document.getElementById('slide-loading').textContent = 'Failed to load slide deck';
   }
 }
