@@ -66,9 +66,11 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
 .slide-thumb.active .title{color:var(--text)}
 
 /* CENTER PANEL — SLIDE IMAGE */
-.center-panel{flex:1;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;position:relative}
-.center-panel img{max-width:100%;max-height:100%;object-fit:contain}
+.center-panel{flex:1;overflow:hidden;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.center-panel img{max-width:100%;max-height:calc(100% - 48px);object-fit:contain;flex-shrink:1}
 .no-slide-msg{color:var(--text-sec);font-size:14px;text-align:center}
+.confirm-bar{width:100%;padding:10px 24px;background:rgba(17,17,17,0.95);text-align:center;font-size:14px;color:var(--green);flex-shrink:0;border-top:1px solid var(--border)}
+.confirm-bar span{font-weight:600;margin-right:6px}
 
 /* RIGHT PANEL — WORD TRACK + OBJECTIONS */
 .right-panel{width:420px;background:var(--bg-panel);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
@@ -204,10 +206,11 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
     <!-- LEFT: Slide Nav -->
     <div class="left-panel" id="left-panel"></div>
 
-    <!-- CENTER: Slide Image -->
+    <!-- CENTER: Slide Image + Confirm Question -->
     <div class="center-panel" id="center-panel">
       <img id="slide-img" src="" alt="Slide">
       <div class="no-slide-msg" id="no-slide-msg" style="display:none">Word track only — no deck slide for this section</div>
+      <div class="confirm-bar" id="confirm-bar"><span>?</span> <span id="confirm-q-text"></span></div>
     </div>
 
     <!-- RIGHT: Word Track + Objections (scrollable together) -->
@@ -221,10 +224,6 @@ html,body{height:100%;overflow:hidden;font-family:'Inter','Segoe UI',-apple-syst
           <div class="wt-section-label"><span>SCRIPT</span><button class="wt-copy-btn" id="copy-btn">Copy</button></div>
           <div class="wt-body" id="wt-body"></div>
           <div class="wt-transition" id="wt-transition"></div>
-        </div>
-        <div class="confirm-section" id="confirm-section">
-          <div class="confirm-section-label">CHECK-IN QUESTIONS</div>
-          <div id="confirm-list"></div>
         </div>
         <div class="obj-section" id="obj-section">
           <div class="obj-section-label">OBJECTION HANDLING</div>
@@ -373,19 +372,14 @@ function goToSlide(idx) {
   if (s.wordTrack.transitionLine) { trans.textContent = s.wordTrack.transitionLine; trans.style.display = 'block'; }
   else { trans.style.display = 'none'; }
 
-  // Check-in questions
-  const confirmList = document.getElementById('confirm-list');
-  confirmList.innerHTML = '';
-  if (s.confirmQuestions && s.confirmQuestions.length) {
-    s.confirmQuestions.forEach(q => {
-      const div = document.createElement('div');
-      div.className = 'confirm-q';
-      div.innerHTML = '<span class="q-icon">?</span><span>' + esc(q) + '</span>';
-      confirmList.appendChild(div);
-    });
-    document.getElementById('confirm-section').style.display = 'block';
+  // Confirm question under slide
+  const cqText = document.getElementById('confirm-q-text');
+  const cqBar = document.getElementById('confirm-bar');
+  if (s.confirmQuestion) {
+    cqText.textContent = s.confirmQuestion;
+    cqBar.style.display = 'block';
   } else {
-    document.getElementById('confirm-section').style.display = 'none';
+    cqBar.style.display = 'none';
   }
 
   // Objections
@@ -399,7 +393,7 @@ function goToSlide(idx) {
   document.getElementById('mobile-body').innerHTML =
     '<div style="margin-bottom:16px"><div class="wt-section-label" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);margin-bottom:10px">SCRIPT</div><div class="wt-body">' + formatWordTrack(s.wordTrack.script) + '</div>' +
     (s.wordTrack.transitionLine ? '<div class="wt-transition">' + esc(s.wordTrack.transitionLine) + '</div>' : '') +
-    '</div>' + buildConfirmHTML(s.confirmQuestions) + buildObjectionsHTML(s.objections);
+    '</div>' + (s.confirmQuestion ? '<div style="border-top:1px solid var(--border);padding:12px 0;margin-bottom:16px;color:var(--green);font-size:14px"><strong>?</strong> ' + esc(s.confirmQuestion) + '</div>' : '') + buildObjectionsHTML(s.objections);
 
   // Bind mobile accordion events
   document.getElementById('mobile-body').querySelectorAll('.objection-header').forEach(h => {
@@ -454,15 +448,6 @@ function renderObjections(objs, container) {
     });
     container.appendChild(item);
   });
-}
-
-function buildConfirmHTML(qs) {
-  if (!qs || !qs.length) return '';
-  let html = '<div class="confirm-section" style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:20px"><div class="confirm-section-label" style="font-size:11px;font-weight:700;letter-spacing:1px;color:var(--green);margin-bottom:10px">CHECK-IN QUESTIONS</div>';
-  qs.forEach(q => {
-    html += '<div class="confirm-q" style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg-card);border-radius:6px;margin-bottom:6px;font-size:13px;line-height:1.6;color:#ddd;border-left:3px solid var(--green)"><span style="color:var(--green);font-weight:700;font-size:15px;flex-shrink:0;margin-top:1px">?</span><span>' + esc(q) + '</span></div>';
-  });
-  return html + '</div>';
 }
 
 function buildObjectionsHTML(objs) {
